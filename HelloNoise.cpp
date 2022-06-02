@@ -3,18 +3,13 @@
 #include <iostream>
 #include <noise/noise.h>
 #include "noiseutils.h"
-
 #include <sstream>
-
 using namespace noise;
-
 utils::NoiseMap BuildAHeightMap (int w, int h, float *bounds) {
 	//Classe para a criação de ruído de perlin (Perlin Noise)
 	module::Perlin myModule;
-
 	//Utilizando a biblioteca auxiliar noiseutils, podemos instanciar um mapa de noise, que neste caso será utilizado para gerar um heightmap
 	utils::NoiseMap heightMap;
-
 	//
    utils::NoiseMapBuilderPlane heightMapBuilder;
    heightMapBuilder.SetSourceModule (myModule);
@@ -22,14 +17,11 @@ utils::NoiseMap BuildAHeightMap (int w, int h, float *bounds) {
    heightMapBuilder.SetDestSize (w, h);
    heightMapBuilder.SetBounds (bounds[0], bounds[1], bounds[2], bounds[3]);
    heightMapBuilder.Build ();
-
    return heightMap;
 }
-
 utils::NoiseMap BuildASphericalHeightMap(int w, int h, float* bounds) {
 	//Classe para a criação de ruído de perlin (Perlin Noise)
 	module::Perlin myModule;
-
 	utils::NoiseMap heightMap;
 	utils::NoiseMapBuilderSphere heightMapBuilder;
 	heightMapBuilder.SetSourceModule(myModule);
@@ -40,15 +32,13 @@ utils::NoiseMap BuildASphericalHeightMap(int w, int h, float* bounds) {
 
 	return heightMap;
 }
-
 void RenderHeightMap(utils::NoiseMap heightMap, std::string filename){
 	//Renderizando...
    utils::RendererImage renderer;
    utils::Image image;
    renderer.SetSourceNoiseMap (heightMap);
    renderer.SetDestImage (image);
-  
-  renderer.ClearGradient ();
+   renderer.ClearGradient ();
   renderer.AddGradientPoint (-1.0000, utils::Color (  0,   0, 128, 255)); // deeps
   renderer.AddGradientPoint (-0.2500, utils::Color (  0,   0, 255, 255)); // shallow
   renderer.AddGradientPoint ( 0.0000, utils::Color (  0, 128, 255, 255)); // shore
@@ -57,20 +47,16 @@ void RenderHeightMap(utils::NoiseMap heightMap, std::string filename){
   renderer.AddGradientPoint ( 0.3750, utils::Color (224, 224,   0, 255)); // dirt
   renderer.AddGradientPoint ( 0.7500, utils::Color (128, 128, 128, 255)); // rock
   renderer.AddGradientPoint ( 1.0000, utils::Color (255, 255, 255, 255)); // snow
-
    renderer.EnableLight ();
    renderer.SetLightContrast (3); // Triple the contrast
    renderer.SetLightBrightness (2); // Double the brightness
-
    renderer.Render ();
-
    //Escrevendo...
    utils::WriterBMP writer;
    writer.SetSourceImage (image);
    writer.SetDestFilename (filename.c_str());
    writer.WriteDestFile ();
 }
-
 int main (int argc, char** argv)
 {
 	utils::NoiseMap heightMap;
